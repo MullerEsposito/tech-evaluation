@@ -1,3 +1,5 @@
+import { transactions } from "../db/transactions.js"
+
 /**
  * GET /api/transactions
  * ---------------------
@@ -13,7 +15,18 @@
  * - 400 Bad Request: Returned if an invalid type value is provided.
  */
 export const index = (req, res) => {
-   //Write code here
+  const validTypes = ["Stake", "Borrow", "Lend"];
+  const { type } = req.query;
+
+  if (type && !validTypes.includes(type)) {
+    return res.status(400).json({ error: "Invalid type value" });
+  }
+
+  const filteredTransactions = type
+    ? transactions.filter((transaction) => transaction.transactionType === type)
+    : transactions;
+
+  return res.status(200).json(filteredTransactions)
 }
 
 /**
@@ -31,7 +44,16 @@ export const index = (req, res) => {
  * - 404 Not Found: Returned if no transaction exists with the given ID.
  */
 export const fetchById = (req, res) => {
-    //Write code here
+  const id = Number(req.params.id);
+
+  const transaction = transactions.find((transaction) => transaction.id === id);
+
+  if (!transaction) {
+    return res.status(404).json({ error: "Transaction not found" });
+  }
+
+  return res.status(200).json(transaction)
+
 }
 
 /**
@@ -52,5 +74,39 @@ export const fetchById = (req, res) => {
  * - 400 Bad Request: Returned if validation fails (e.g., invalid type, empty token, or non-positive amount).
  */
 export const create = (req, res) => {
-    //Write code here
+  const { userName, type, token, amount } = req.body;
+  const validTypes = ["Stake", "Borrow", "Lend"];
+
+  if (!userName || !type || !token || !amount) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+
+  if (typeof token !== "string" || token.trim() === "") {
+    return res.status(400).json({ error: "Invalid token value" });
+  }
+
+  if (typeof amount !== "number" || amount <= 0) {
+    return res.status(400).json({ error: "Invalid amount value" });
+  }
+
+  if (type && !validTypes.includes(type)) {
+    return res.status(400).json({ error: "Invalid type value" });
+  }
+
+  const newTransaction = {
+    id: transactions.length + 1,
+    userName,
+    type,
+    token,
+    amount,
+    date: new Intl.DateTimeFormat("en-CA", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).format(new Date()),
+  };
+
+  transactions.push(newTransaction);
+
+  return res.status(201).json(newTransaction);
 }
