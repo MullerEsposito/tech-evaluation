@@ -119,7 +119,46 @@ export const Palm = "https://palm-mainnet.infura.io/v3/3ae1d04a7c1a35b9edf045a7d
 export const Ronin = "https://api.roninchain.com"
 export const xDai = "https://rpc.xdaichain.com"
 
-export const  KYCverifyABI = []
+export const  KYCverifyABI = [
+  {
+    "inputs":[
+      {
+        "internalType":"address",
+        "name":"user",
+        "type":"address"
+      },
+      {
+        "internalType":"bool",
+        "name":"verified",
+        "type":"bool"
+      }
+    ],
+    "name":"verifyUser",
+    "outputs":[],
+    "stateMutability":"nonpayable",
+    "type":"function"
+  },
+  { 
+    "inputs": 
+    [
+      { 
+        "internalType": "address", 
+        "name": "user", 
+        "type": "address" 
+      }
+    ], 
+    "name": "checkKYC", 
+    "outputs": [
+      { 
+        "internalType": "bool", 
+        "name": "", 
+        "type": "bool" 
+      }
+    ], 
+    "stateMutability": "view", 
+    "type": "function" 
+  }
+]
 
 export const erc20ABI = [
     {
