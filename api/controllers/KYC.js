@@ -45,7 +45,7 @@ export const check = async (req, res) => {
 
         const status = await KYCContract.checkKYC(address)
 
-        return res.status(200).json({ status" })
+        return res.status(200).json({ status })
     } catch (error) {
         console.log(error)
         return res.status(500).json({ message: error })
